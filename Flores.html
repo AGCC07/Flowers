@@ -23,20 +23,20 @@
             background-color: var(--black);
             font-family: 'Montserrat', sans-serif;
             overflow: hidden;
-            perspective: 2000px;
+            perspective: 2000px; /* Perspectiva 3D desde la base */
         }
 
-        /* El contenedor es la mitad derecha del libro */
+        /* 
+           ¡CLAVE! Se eliminó 'preserve-3d' del contenedor para forzar 
+           a Android a respetar el Z-Index de las páginas hijas.
+        */
         .book-container {
             position: relative;
-            width: 42vw; height: 65vh; max-width: 300px; max-height: 480px;
-            transform-style: preserve-3d;
-            transition: transform 0.8s cubic-bezier(0.645, 0.045, 0.355, 1);
-            transform: translateX(0%);
+            width: 45vw; height: 65vh; max-width: 320px; max-height: 480px;
         }
 
         @media (max-width: 600px) {
-            .book-container { width: 45vw; height: 60vh; }
+            .book-container { width: 48vw; height: 65vh; }
         }
 
         .page {
@@ -55,7 +55,7 @@
             display: flex; flex-direction: column; justify-content: center; align-items: center;
             text-align: center; padding: 20px;
             border: 4px solid var(--yellow);
-            overflow: hidden; /* Evita que cualquier texto se salga de la página */
+            overflow: hidden;
         }
 
         .front { border-radius: 4px 15px 15px 4px; }
@@ -66,7 +66,6 @@
 
         .page.flipped { transform: rotateY(-180deg); }
 
-        /* Textos */
         h1 { font-weight: 900; font-size: clamp(1.8rem, 5vw, 2.5rem); margin: 0 0 10px 0; line-height: 1.1; }
         p { font-weight: 500; font-size: clamp(0.9rem, 3.5vw, 1.1rem); line-height: 1.4; margin: 0; }
         .flower { font-size: clamp(3rem, 10vw, 4.5rem); margin: 15px 0; animation: float 3s ease-in-out infinite; }
@@ -74,16 +73,65 @@
 
         @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
 
-        /* Sombra de profundidad en el lomo */
         .front::before { content: ''; position: absolute; top: 0; bottom: 0; left: 0; width: 25px; background: linear-gradient(to right, rgba(0,0,0,0.4), transparent); border-radius: 4px 0 0 4px; }
         .back::before { content: ''; position: absolute; top: 0; bottom: 0; right: 0; width: 25px; background: linear-gradient(to left, rgba(0,0,0,0.4), transparent); border-radius: 0 4px 4px 0; }
+
+        /* Z-index base estático (P1 arriba, P5 abajo) */
+        #p1 { z-index: 5; }
+        #p2 { z-index: 4; }
+        #p3 { z-index: 3; }
+        #p4 { z-index: 2; }
+        #p5 { z-index: 1; }
     </style>
 </head>
 <body>
     <div class="book-container" id="book">
         
-        <!-- Página 5 -->
-        <div class="page" id="p5" style="z-index: 1;">
+        <!-- PÁGINA 1 (PORTADA) -->
+        <div class="page" id="p1">
+            <div class="front theme-black">
+                <h1>Para ti</h1>
+                <div class="flower">🌻</div>
+                <p class="hint">(TOCA PARA ABRIR)</p>
+            </div>
+            <div class="back theme-yellow">
+                <p>¿Sabes por qué hoy, 21 de septiembre...</p>
+            </div>
+        </div>
+
+        <!-- PÁGINA 2 -->
+        <div class="page" id="p2">
+            <div class="front theme-yellow">
+                <p>...todo el mundo busca regalar flores amarillas?</p>
+            </div>
+            <div class="back theme-black">
+                <p>La tradición dice que detrás de esto hay un significado oculto👀</p>
+            </div>
+        </div>
+
+        <!-- PÁGINA 3 -->
+        <div class="page" id="p3">
+            <div class="front theme-black">
+                <p>Dicen que cuando alguien te las regala...</p>
+                <div class="hint">💛</div>
+            </div>
+            <div class="back theme-yellow">
+                <p>No es solo un detalle de una fecha o una simple canción.</p>
+            </div>
+        </div>
+
+        <!-- PÁGINA 4 -->
+        <div class="page" id="p4">
+            <div class="front theme-yellow">
+                <p>Es decirle a esa persona:<br><br>"Quiero que te quedes a mi lado".</p>
+            </div>
+            <div class="back theme-black">
+                <p>Y yo no podía dejar que este día pasara por alto...</p>
+            </div>
+        </div>
+
+        <!-- PÁGINA 5 (FINAL) -->
+        <div class="page" id="p5">
             <div class="front theme-black">
                 <p>Y aunque hoy sea el día oficial...</p>
                 <div class="hint">✨</div>
@@ -95,49 +143,6 @@
             </div>
         </div>
 
-        <!-- Página 4 -->
-        <div class="page" id="p4" style="z-index: 2;">
-            <div class="front theme-yellow">
-                <p>Es decirle a esa persona:<br><br>"Quiero que te quedes a mi lado".</p>
-            </div>
-            <div class="back theme-black">
-                <p>Y yo no podía dejar que este día pasara por alto...</p>
-            </div>
-        </div>
-
-        <!-- Página 3 -->
-        <div class="page" id="p3" style="z-index: 3;">
-            <div class="front theme-black">
-                <p>Dicen que cuando alguien te las regala...</p>
-                <div class="hint">💛</div>
-            </div>
-            <div class="back theme-yellow">
-                <p>No es solo un detalle de una fecha o una simple canción.</p>
-            </div>
-        </div>
-
-        <!-- Página 2 -->
-        <div class="page" id="p2" style="z-index: 4;">
-            <div class="front theme-yellow">
-                <p>...todo el mundo busca regalar flores amarillas?</p>
-            </div>
-            <div class="back theme-black">
-                <p>La tradición dice que detrás de esto hay un significado oculto👀</p>
-            </div>
-        </div>
-
-        <!-- Página 1 (Portada) -->
-        <div class="page" id="p1" style="z-index: 5;">
-            <div class="front theme-black">
-                <h1>Para ti</h1>
-                <div class="flower">🌻</div>
-                <p class="hint">(TOCA PARA ABRIR)</p>
-            </div>
-            <div class="back theme-yellow">
-                <p>¿Sabes por qué hoy, 21 de septiembre...</p>
-            </div>
-        </div>
-
     </div>
 
     <script>
@@ -146,15 +151,16 @@
         pages.forEach((page, index) => {
             page.addEventListener('click', function() {
                 if (this.classList.contains('flipped')) {
-                    // Cerrar página
+                    // Cierra la hoja (vuelve a la derecha)
                     this.classList.remove('flipped');
-                    // Espera a que termine la animación para corregir el orden (z-index)
                     setTimeout(() => {
-                        this.style.zIndex = pages.length - index;
+                        // Restaura el orden original exacto al terminar el giro
+                        this.style.zIndex = pages.length - index; 
                     }, 400);
                 } else {
-                    // Abrir página
-                    this.style.zIndex = pages.length + index;
+                    // Abre la hoja (va a la izquierda)
+                    // Se suma una cantidad alta para garantizar que siempre caiga arriba del lado izquierdo
+                    this.style.zIndex = pages.length + index + 1; 
                     this.classList.add('flipped');
                 }
             });
