@@ -22,22 +22,15 @@
             background-color: var(--black);
             font-family: 'Montserrat', sans-serif;
             overflow: hidden;
-            /* Flexbox en el body para centrar el escenario */
             display: flex; justify-content: center; align-items: center;
         }
 
-        /* Escenario con perspectiva 3D */
         .scene {
             width: 100vw; height: 100vh;
             display: flex; justify-content: center; align-items: center;
             perspective: 2000px;
         }
 
-        /* 
-           NUEVA GEOMETRÍA:
-           El contenedor mide el ancho de las DOS páginas abiertas (90vw).
-           Por defecto se mueve -25% a la izquierda para que la página derecha quede en el centro.
-        */
         .book {
             position: relative;
             width: 90vw; 
@@ -48,12 +41,10 @@
             transform: translateX(-25%);
         }
 
-        /* Al abrirse, el contenedor vuelve al centro (0%) */
         .book.open {
             transform: translateX(0%);
         }
 
-        /* Cada página ocupa la mitad derecha del contenedor */
         .page {
             position: absolute; top: 0; right: 0;
             width: 50%; height: 100%;
@@ -81,7 +72,6 @@
 
         .page.flipped { transform: rotateY(-180deg); }
 
-        /* Fuentes ajustadas dinámicamente al viewport para evitar cortes */
         h1 { font-weight: 900; font-size: clamp(1.2rem, 4vw, 2.2rem); margin: 0 0 10px 0; line-height: 1.1; }
         p { font-weight: 500; font-size: clamp(0.75rem, 3vw, 1.1rem); line-height: 1.4; margin: 0; }
         .flower { font-size: clamp(2.5rem, 8vw, 4rem); margin: 10px 0; animation: float 3s ease-in-out infinite; }
@@ -101,12 +91,19 @@
 </head>
 <body>
 
+    <!-- REPRODUCTOR DE AUDIO (Oculto) -->
+    <audio id="musica" loop>
+        <!-- Aquí definimos el archivo de audio. Si tu archivo se llama distinto, cámbialo aquí -->
+        <source src="cancion.mp3" type="audio/mpeg">
+    </audio>
+
     <div class="scene">
         <div class="book" id="book">
             
+            <!-- Página 1 -->
             <div class="page" id="p1">
                 <div class="front theme-black">
-                    <h1>Para mi niña</h1>
+                    <h1>Para ti</h1>
                     <div class="flower">🌻</div>
                     <p class="hint">(TOCA PARA ABRIR)</p>
                 </div>
@@ -115,6 +112,7 @@
                 </div>
             </div>
 
+            <!-- Página 2 -->
             <div class="page" id="p2">
                 <div class="front theme-yellow">
                     <p>...todo el mundo busca regalar flores amarillas?</p>
@@ -124,6 +122,7 @@
                 </div>
             </div>
 
+            <!-- Página 3 -->
             <div class="page" id="p3">
                 <div class="front theme-black">
                     <p>Dicen que cuando alguien te las regala...</p>
@@ -134,24 +133,26 @@
                 </div>
             </div>
 
+            <!-- Página 4 -->
             <div class="page" id="p4">
                 <div class="front theme-yellow">
                     <p>Es decirle a esa persona:<br><br>"Quiero que te quedes a mi lado".</p>
                 </div>
                 <div class="back theme-black">
-                    <p>Y aunque no este a tu lado por las circunstancias del trabajo</p>
+                    <p>Y yo no podía dejar que este día pasara por alto...</p>
                 </div>
             </div>
 
+            <!-- Página 5 -->
             <div class="page" id="p5">
                 <div class="front theme-black">
-                    <p>Quiero que sepas que te quiero un mundo. ❤️</p>
+                    <p>Y aunque hoy sea el día oficial...</p>
                     <div class="hint">✨</div>
                 </div>
                 <div class="back theme-yellow">
                     <h1>Fin.</h1>
                     <div class="flower">🌻</div>
-                    <p class="hint" style="color: #333;">MUACK ❤️</p>
+                    <p class="hint" style="color: #333;">(TOCA PARA CERRAR)</p>
                 </div>
             </div>
 
@@ -161,9 +162,10 @@
     <script>
         const pages = document.querySelectorAll('.page');
         const book = document.getElementById('book');
+        const musica = document.getElementById('musica');
+        let musicaIniciada = false;
 
         function updateState() {
-            // Verifica si hay al menos una página volteada
             const isAnyOpen = Array.from(pages).some(p => p.classList.contains('flipped'));
             if (isAnyOpen) {
                 book.classList.add('open');
@@ -174,11 +176,19 @@
 
         pages.forEach((page, index) => {
             page.addEventListener('click', function() {
+                
+                // --- INICIO DE MÚSICA AL PRIMER TOQUE ---
+                if (!musicaIniciada) {
+                    musica.volume = 0.5; // Ajusta el volumen si lo sientes muy fuerte (0.0 a 1.0)
+                    musica.play().catch(e => console.log("El navegador requiere interacción manual"));
+                    musicaIniciada = true;
+                }
+
                 if (this.classList.contains('flipped')) {
                     this.classList.remove('flipped');
                     setTimeout(() => {
                         this.style.zIndex = pages.length - index; 
-                    }, 400); // Se actualiza a la mitad de la animación
+                    }, 400); 
                 } else {
                     this.style.zIndex = pages.length + index; 
                     this.classList.add('flipped');
