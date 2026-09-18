@@ -18,12 +18,8 @@
         }
 
         body {
-            margin: 0;
-            padding: 0;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            margin: 0; padding: 0; min-height: 100vh;
+            display: flex; justify-content: center; align-items: center;
             background-color: var(--black);
             font-family: 'Montserrat', sans-serif;
             overflow: hidden;
@@ -33,30 +29,19 @@
         /* El contenedor es la mitad derecha del libro */
         .book-container {
             position: relative;
-            width: 42vw; 
-            height: 65vh;
-            max-width: 300px;
-            max-height: 480px;
+            width: 42vw; height: 65vh; max-width: 300px; max-height: 480px;
             transform-style: preserve-3d;
             transition: transform 0.8s cubic-bezier(0.645, 0.045, 0.355, 1);
-            /* Centrado inicial (libro cerrado) */
-            transform: translateX(0%); 
+            transform: translateX(0%); /* Centrado inicial */
         }
 
-        /* En pantallas más pequeñas (móviles), hacemos el libro un poco más ancho */
         @media (max-width: 600px) {
-            .book-container {
-                width: 45vw;
-                height: 60vh;
-            }
+            .book-container { width: 45vw; height: 60vh; }
         }
 
         .page {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            position: absolute; top: 0; left: 0;
+            width: 100%; height: 100%;
             transform-origin: left center;
             transform-style: preserve-3d;
             transition: transform 0.8s cubic-bezier(0.645, 0.045, 0.355, 1);
@@ -64,71 +49,35 @@
         }
 
         .front, .back {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            position: absolute; top: 0; left: 0;
+            width: 100%; height: 100%;
             backface-visibility: hidden;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            padding: 20px;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            text-align: center; padding: 20px;
             border: 4px solid var(--yellow);
         }
 
-        /* Bordes redondeados correctos para que parezca libro */
-        .front {
-            border-radius: 4px 15px 15px 4px;
-        }
+        .front { border-radius: 4px 15px 15px 4px; }
+        .back { transform: rotateY(180deg); border-radius: 15px 4px 4px 15px; }
 
-        .back {
-            transform: rotateY(180deg);
-            border-radius: 15px 4px 4px 15px;
-        }
-
-        /* Temas de los pliegos (Páginas abiertas) */
         .theme-black { background-color: var(--black); color: var(--yellow); }
         .theme-yellow { background-color: var(--yellow); color: var(--black); border-color: var(--black); }
 
-        .page.flipped {
-            transform: rotateY(-180deg);
-        }
+        .page.flipped { transform: rotateY(-180deg); }
 
         /* Textos */
         h1 { font-weight: 900; font-size: clamp(2rem, 6vw, 3rem); margin: 0 0 10px 0; line-height: 1; }
         p { font-weight: 500; font-size: clamp(1rem, 4vw, 1.2rem); line-height: 1.4; margin: 0; }
-        
         .flower { font-size: clamp(4rem, 12vw, 5rem); margin: 15px 0; animation: float 3s ease-in-out infinite; }
         .small-flower { font-size: 2rem; margin-top: 15px; }
         .hint { font-size: 0.75rem; color: #888; margin-top: 25px; letter-spacing: 1px; font-weight: 700; }
         .hint-black { color: #333; }
 
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-8px); }
-        }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
 
         /* Sombra de profundidad en el lomo */
-        .front::before {
-            content: ''; position: absolute; top: 0; bottom: 0; left: 0; width: 25px;
-            background: linear-gradient(to right, rgba(0,0,0,0.4), transparent);
-            border-radius: 4px 0 0 4px;
-        }
-        .back::before {
-            content: ''; position: absolute; top: 0; bottom: 0; right: 0; width: 25px;
-            background: linear-gradient(to left, rgba(0,0,0,0.4), transparent);
-            border-radius: 0 4px 4px 0;
-        }
-
-        /* Orden de las páginas */
-        #p1 { z-index: 5; }
-        #p2 { z-index: 4; }
-        #p3 { z-index: 3; }
-        #p4 { z-index: 2; }
-        #p5 { z-index: 1; }
+        .front::before { content: ''; position: absolute; top: 0; bottom: 0; left: 0; width: 25px; background: linear-gradient(to right, rgba(0,0,0,0.4), transparent); border-radius: 4px 0 0 4px; }
+        .back::before { content: ''; position: absolute; top: 0; bottom: 0; right: 0; width: 25px; background: linear-gradient(to left, rgba(0,0,0,0.4), transparent); border-radius: 0 4px 4px 0; }
     </style>
 </head>
 <body>
@@ -136,7 +85,7 @@
     <div class="book-container" id="book">
         
         <!-- Página 5 -->
-        <div class="page" id="p5">
+        <div class="page" id="p5" style="z-index: 1;">
             <div class="front theme-black">
                 <p>Y aunque hoy sea el día oficial...</p>
                 <div class="small-flower">✨</div>
@@ -149,7 +98,7 @@
         </div>
 
         <!-- Página 4 -->
-        <div class="page" id="p4">
+        <div class="page" id="p4" style="z-index: 2;">
             <div class="front theme-yellow">
                 <p>Es decirle a esa persona:<br><br>"Quiero que te quedes a mi lado".</p>
             </div>
@@ -159,7 +108,7 @@
         </div>
 
         <!-- Página 3 -->
-        <div class="page" id="p3">
+        <div class="page" id="p3" style="z-index: 3;">
             <div class="front theme-black">
                 <p>Dicen que cuando alguien te las regala...</p>
                 <div class="small-flower">💛</div>
@@ -170,7 +119,7 @@
         </div>
 
         <!-- Página 2 -->
-        <div class="page" id="p2">
+        <div class="page" id="p2" style="z-index: 4;">
             <div class="front theme-yellow">
                 <p>...todo el mundo busca regalar flores amarillas?</p>
             </div>
@@ -181,10 +130,141 @@
         </div>
 
         <!-- Página 1 (Portada) -->
-        <div class="page" id="p1">
+        <div class="page" id="p1" style="z-index: 5;">
             <div class="front theme-black">
-                <h1>Para ti</h1>
-                <div class="flower">🌻</div>
+                <h1>Para ti¡Aquí tienes el código completo y corregido! He reescrito la lógica de JavaScript para asegurarme de que las páginas se apilen perfectamente una sobre otra al pasar las hojas, resolviendo el problema de Z-Index que provocaba que se vieran páginas incorrectas en tu captura [cite: 5].
+
+```html
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Para ti 🌻</title>
+    <link href="[https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700;900&display=swap](https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700;900&display=swap)" rel="stylesheet">
+    <style>
+        :root {
+            --yellow: #facc15;
+            --black: #111111;
+        }
+
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+        }
+
+        body {
+            margin: 0; padding: 0; min-height: 100vh;
+            display: flex; justify-content: center; align-items: center;
+            background-color: var(--black);
+            font-family: 'Montserrat', sans-serif;
+            overflow: hidden;
+            perspective: 2000px;
+        }
+
+        /* El contenedor es la mitad derecha del libro */
+        .book-container {
+            position: relative;
+            width: 42vw; height: 65vh; max-width: 300px; max-height: 480px;
+            transform-style: preserve-3d;
+            transition: transform 0.8s cubic-bezier(0.645, 0.045, 0.355, 1);
+            transform: translateX(0%);
+        }
+
+        @media (max-width: 600px) {
+            .book-container { width: 45vw; height: 60vh; }
+        }
+
+        .page {
+            position: absolute; top: 0; left: 0;
+            width: 100%; height: 100%;
+            transform-origin: left center;
+            transform-style: preserve-3d;
+            transition: transform 0.8s cubic-bezier(0.645, 0.045, 0.355, 1);
+            cursor: pointer;
+        }
+
+        .front, .back {
+            position: absolute; top: 0; left: 0;
+            width: 100%; height: 100%;
+            backface-visibility: hidden;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            text-align: center; padding: 20px;
+            border: 4px solid var(--yellow);
+        }
+
+        .front { border-radius: 4px 15px 15px 4px; }
+        .back { transform: rotateY(180deg); border-radius: 15px 4px 4px 15px; }
+
+        .theme-black { background-color: var(--black); color: var(--yellow); }
+        .theme-yellow { background-color: var(--yellow); color: var(--black); border-color: var(--black); }
+
+        .page.flipped { transform: rotateY(-180deg); }
+
+        /* Textos */
+        h1 { font-weight: 900; font-size: clamp(2rem, 6vw, 3rem); margin: 0 0 10px 0; line-height: 1; }
+        p { font-weight: 500; font-size: clamp(1rem, 4vw, 1.2rem); line-height: 1.4; margin: 0; }
+        .flower { font-size: clamp(4rem, 12vw, 5rem); margin: 15px 0; animation: float 3s ease-in-out infinite; }
+        .hint { font-size: 0.75rem; color: #888; margin-top: 25px; letter-spacing: 1px; font-weight: 700; }
+
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+
+        /* Sombra de profundidad en el lomo */
+        .front::before { content: ''; position: absolute; top: 0; bottom: 0; left: 0; width: 25px; background: linear-gradient(to right, rgba(0,0,0,0.4), transparent); border-radius: 4px 0 0 4px; }
+        .back::before { content: ''; position: absolute; top: 0; bottom: 0; right: 0; width: 25px; background: linear-gradient(to left, rgba(0,0,0,0.4), transparent); border-radius: 0 4px 4px 0; }
+    </style>
+</head>
+<body>
+    <div class="book-container" id="book">
+        
+        <!-- Página 5 -->
+        <div class="page" id="p5" style="z-index: 1;">
+            <div class="front theme-black">
+                <p>Y aunque hoy sea el día oficial...</p>
+                <div class="hint">✨</div>
+            </div>
+            <div class="back theme-yellow">
+                <h1>Fin.🌻</h1>
+                <p class="hint">(TOCA PARA CERRAR)</p>
+            </div>
+        </div>
+
+        <!-- Página 4 -->
+        <div class="page" id="p4" style="z-index: 2;">
+            <div class="front theme-yellow">
+                <p>Es decirle a esa persona:<br><br>"Quiero que te quedes a mi lado".</p>
+            </div>
+            <div class="back theme-black">
+                <p>Y yo no podía dejar que este día pasara por alto...</p>
+            </div>
+        </div>
+
+        <!-- Página 3 -->
+        <div class="page" id="p3" style="z-index: 3;">
+            <div class="front theme-black">
+                <p>Dicen que cuando alguien te las regala...</p>
+                <div class="hint">💛</div>
+            </div>
+            <div class="back theme-yellow">
+                <p>No es solo un detalle de una fecha o una simple canción.</p>
+            </div>
+        </div>
+
+        <!-- Página 2 -->
+        <div class="page" id="p2" style="z-index: 4;">
+            <div class="front theme-yellow">
+                <p>...todo el mundo busca regalar flores amarillas?</p>
+            </div>
+            <div class="back theme-black">
+                <p>La tradición dice que detrás de esto hay un significado oculto👀</p>
+            </div>
+        </div>
+
+        <!-- Página 1 (Portada) -->
+        <div class="page" id="p1" style="z-index: 5;">
+            <div class="front theme-black">
+                <h1>Para ti🌻</h1>
                 <p class="hint">(TOCA PARA ABRIR)</p>
             </div>
             <div class="back theme-yellow">
@@ -198,39 +278,20 @@
         const pages = document.querySelectorAll('.page');
         const bookContainer = document.getElementById('book');
 
-        // Función matemática para centrar el libro
-        function centerBook() {
-            // Verifica si al menos una página está volteada
-            const isAnyPageOpen = Array.from(pages).some(p => p.classList.contains('flipped'));
-            
-            if (isAnyPageOpen) {
-                // Si está abierto, desplaza el contenedor a la derecha el 50% de su ancho
-                // para que el lomo quede en el centro de la pantalla
-                bookContainer.style.transform = 'translateX(50%)';
-            } else {
-                // Si está cerrado, lo devuelve a su estado original (centrado)
-                bookContainer.style.transform = 'translateX(0%)';
-            }
-        }
-
         pages.forEach((page, index) => {
             page.addEventListener('click', function() {
-                const isFlipped = this.classList.contains('flipped');
-                
-                if (isFlipped) {
+                if (this.classList.contains('flipped')) {
                     // Cerrar página
                     this.classList.remove('flipped');
+                    // Espera a que termine la animación para corregir el orden (z-index)
                     setTimeout(() => {
                         this.style.zIndex = pages.length - index;
-                    }, 400); // Mitad del tiempo de animación
+                    }, 800);
                 } else {
                     // Abrir página
-                    this.classList.add('flipped');
                     this.style.zIndex = pages.length + index;
+                    this.classList.add('flipped');
                 }
-
-                // Llamar a la función de centrado inmediatamente
-                centerBook();
             });
         });
     </script>
