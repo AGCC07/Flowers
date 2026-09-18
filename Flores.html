@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Flores Amarillas 🌻</title>
+    <!-- Usamos Montserrat para un diseño limpio, moderno y grueso (ideal para amarillo/negro) -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700;900&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --yellow: #facc15; /* Amarillo vibrante */
+            --black: #111111;  /* Negro profundo */
+            --border-width: 6px;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--black);
+            background-image: radial-gradient(circle at center, #222 0%, var(--black) 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+            font-family: 'Montserrat', sans-serif;
+            /* Evita que el usuario seleccione texto al tocar en móviles */
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        /* Contenedor del libro. Usa unidades vw para ser 100% responsivo en móviles */
+        .scene {
+            width: 44vw;         /* Mitad de la pantalla (menos margen) */
+            height: 65vw;        /* Proporción de aspecto tipo libro */
+            max-width: 260px;
+            max-height: 380px;
+            perspective: 1500px;
+            /* Inicia movido a la derecha para que el libro cerrado esté centrado */
+            transform: translateX(23vw); 
+            transition: transform 0.8s cubic-bezier(0.645, 0.045, 0.355, 1);
+        }
+
+        /* En pantallas más grandes de móvil, limitamos el movimiento para mantener el centro */
+        @media (min-width: 600px) {
+            .scene { transform: translateX(130px); }
+        }
+
+        /* Estados del escenario para centrar el lomo al abrir o cerrar en el otro sentido */
+        .scene.is-open { transform: translateX(0); }
+        
+        .scene.is-fully-flipped {
+            transform: translateX(-23vw);
+        }
+        @media (min-width: 600px) {
+            .scene.is-fully-flipped { transform: translateX(-130px); }
+        }
+
+        .book {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+        }
+
+        .page {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            transform-origin: left center;
+            transform-style: preserve-3d;
+            transition: transform 0.8s cubic-bezier(0.645, 0.045, 0.355, 1);
+            cursor: pointer;
+            background-color: var(--yellow);
+            border: var(--border-width) solid var(--black);
+            border-radius: 4px 15px 15px 4px;
+            /* Sombra para dar efecto de relieve */
+            box-shadow: inset 5px 0 15px rgba(0,0,0,0.1), 10px 10px 25px rgba(0,0,0,0.6);
+            /* Importante para toques en móvil */
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* Animación y forma cuando la página se pasa a la izquierda */
+        .page.flipped {
+            transform: rotateY(-180deg);
+            border-radius: 15px 4px 4px 15px;
+            box-shadow: inset -5px 0 15px rgba(0,0,0,0.1), -10px 10px 25px rgba(0,0,0,0.6);
+        }
+
+        .front, .back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            backface-visibility: hidden;
+            box-sizing: border-box;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            border-radius: inherit;
+            /* Para evitar que los bordes del backface se asomen feos */
+            background-clip: padding-box; 
+        }
+
+        .back {
+            transform: rotateY(180deg);
+        }
+
+        .theme-yellow {
+            background-color: var(--yellow);
+            color: var(--black);
+        }
+
+        .theme-black {
+            background-color: var(--black);
+            color: var(--yellow);
+            /* Borde interno amarillo para contraste en la página negra */
+            border: 4px solid var(--yellow);
+        }
+
+        /* Orden de apilamiento inicial */
+        #page1 { z-index: 5; }
+        #page2 { z-index: 4; }
+        #page3 { z-index: 3; }
+        #page4 { z-index: 2; }
+        #page5 { z-index: 1; }
+
+        h1 {
+            font-size: clamp(1.8rem, 6vw, 2.5rem);
+            font-weight: 900;
+            margin: 0 0 15px 0;
+            line-height: 1.1;
+        }
+
+        p {
+            font-size: clamp(0.95rem, 3.5vw, 1.2rem);
+            font-weight: 700;
+            line-height: 1.4;
+            margin: 0;
+        }
+
+        .flower {
+            font-size: clamp(3rem, 10vw, 4.5rem);
+            margin: 15px 0;
+            display: inline-block;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .small-flower {
+            font-size: clamp(1.5rem, 6vw, 2rem);
+            margin-top: 15px;
+        }
+
+        .instruction {
+            font-size: clamp(0.65rem, 2.5vw, 0.85rem);
+            font-weight: 500;
+            margin-top: 25px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.8;
+            animation: pulse 2s infinite;
+        }
+
+        /* Animaciones para las flores y el texto */
+        @keyframes float {
+            0% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-8px) rotate(5deg); }
+            100% { transform: translateY(0px) rotate(0deg); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="scene">
+        <div class="book">
+
+            <!-- PÁGINA 1: Portada y Primera hoja interna -->
+            <div class="page" id="page1">
+                <div class="front theme-yellow">
+                    <h1>Para ti ✨</h1>
+                    <span class="flower">🌻</span>
+                    <div class="instruction">(Toca para abrir)</div>
+                </div>
+                <div class="back theme-black">
+                    <p>¿Sabes por qué hoy, 21 de septiembre...</p>
+                </div>
+            </div>
+
+            <!-- PÁGINA 2 -->
+            <div class="page" id="page2">
+                <div class="front theme-black">
+                    <p>...el mundo entero se llena de flores amarillas?</p>
+                    <span class="small-flower">💛</span>
+                </div>
+                <div class="back theme-yellow">
+                    <p>Dicen que cuando alguien especial te las regala...</p>
+                </div>
+            </div>
+
+            <!-- PÁGINA 3 -->
+            <div class="page" id="page3">
+                <div class="front theme-yellow">
+                    <p>...no es solo un detalle bonito o una simple casualidad.</p>
+                </div>
+                <div class="back theme-black">
+                    <p>Es una promesa silenciosa, una forma de decirte...</p>
+                    <span class="small-flower">✨</span>
+                </div>
+            </div>
+
+            <!-- PÁGINA 4 -->
+            <div class="page" id="page4">
+                <div class="front theme-black">
+                    <p>...que quiere quedarse a tu lado por mucho, mucho tiempo.</p>
+                </div>
+                <div class="back theme-yellow">
+                    <p>Y yo no podía dejar pasar un día como hoy...</p>
+                </div>
+            </div>
+
+            <!-- PÁGINA 5: Última página y contraportada -->
+            <div class="page" id="page5">
+                <div class="front theme-yellow">
+                    <p>...sin regalarte las tuyas.</p>
+                    <span class="flower">🌻💛</span>
+                    <p>¡Feliz 21 de Septiembre!</p>
+                </div>
+                <div class="back theme-black">
+                    <h1>Fin.</h1>
+                    <span class="small-flower">🌻</span>
+                    <div class="instruction">(Toca para cerrar)</div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        const pages = document.querySelectorAll('.page');
+        const scene = document.querySelector('.scene');
+
+        pages.forEach((page, index) => {
+            // Guardamos el índice original para el z-index
+            page.pageIndex = index;
+
+            page.addEventListener('click', function() {
+                // Si la página ya está girada, la cerramos (girar a la derecha)
+                if (this.classList.contains('flipped')) {
+                    this.classList.remove('flipped');
+                    
+                    // Esperamos la mitad de la animación para reordenar el z-index 
+                    // y que la página no se cruce visualmente mal.
+                    setTimeout(() => {
+                        this.style.zIndex = pages.length - index;
+                    }, 400);
+
+                } else {
+                    // Si no está girada, la abrimos (girar a la izquierda)
+                    this.classList.add('flipped');
+                    
+                    // Cuando pasa a la izquierda, debe ponerse por encima del mazo izquierdo
+                    this.style.zIndex = index + 1;
+                }
+
+                // Evaluar el estado global del libro para centrar la cámara/escenario
+                updateSceneState();
+            });
+        });
+
+        function updateSceneState() {
+            // Contamos cuántas páginas están giradas hacia la izquierda
+            const flippedCount = document.querySelectorAll('.flipped').length;
+            const totalPages = pages.length;
+
+            if (flippedCount === 0) {
+                // Libro completamente cerrado (Portada visible)
+                scene.classList.remove('is-open');
+                scene.classList.remove('is-fully-flipped');
+            } else if (flippedCount === totalPages) {
+                // Libro completamente abierto hasta el final (Contraportada visible)
+                scene.classList.remove('is-open');
+                scene.classList.add('is-fully-flipped');
+            } else {
+                // Libro abierto por la mitad (Lomo centrado)
+                scene.classList.add('is-open');
+                scene.classList.remove('is-fully-flipped');
+            }
+        }
+    </script>
+</body>
+</html>
